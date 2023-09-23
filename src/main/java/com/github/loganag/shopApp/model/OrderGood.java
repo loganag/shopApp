@@ -16,10 +16,10 @@ public class OrderGood {
     @Column(name = "id", nullable = false, unique = true)
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "good_id", referencedColumnName = "Id")
+    @JoinColumn(name = "good_id", referencedColumnName = "id")
     private Good good;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id", referencedColumnName = "Id")
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
     @Column(name = "quantity", nullable = false)
     private int quantity;

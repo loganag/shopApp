@@ -1,17 +1,19 @@
-package com.github.loganag.shopApp.serviceImpl;
+package com.github.loganag.shopApp.service;
 
 import com.github.loganag.shopApp.model.Good;
 import com.github.loganag.shopApp.repos.GoodRepo;
 import com.github.loganag.shopApp.service.GoodService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class GoodServiceImpl implements GoodService {
-    GoodRepo goodRepo;
+    private final GoodRepo goodRepo;
     @Override
     public Long saveGood(Good good) {
         return goodRepo.save(good).getId();
@@ -21,4 +23,10 @@ public class GoodServiceImpl implements GoodService {
     public List<Good> findAll() {
         return goodRepo.findAll();
     }
+
+    @Override
+    public Optional<Good> findById(Long id) {
+        return goodRepo.findById(id);
+    }
+
 }
