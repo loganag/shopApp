@@ -1,6 +1,8 @@
 package com.github.loganag.shopApp.model;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,6 +32,7 @@ public class Order {
     private Status status;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JsonIgnore
     private Set<OrderGood> orderGoods;
 
     @Override

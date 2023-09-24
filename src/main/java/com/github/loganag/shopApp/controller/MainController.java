@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,30 +21,22 @@ public class MainController {
     GoodServiceImpl goodService;
     OrderServiceImpl orderService;
 
-    @GetMapping
-    public Good getGood() {
-        return new Good(1L, "Iphone 11", 1, 102.2, new HashSet<>() {
-        });
-    }
-
-    @PostMapping
+    @PostMapping("/add")
     public Long addGood(@RequestBody Good good) {
         return goodService.saveGood(good);
     }
 
     @GetMapping("/all")
     public List<Good> getAllGoods() {
-        List<Good> goods = goodService.findAll();
-        return goods;
+        return goodService.findAll();
     }
 
     @PostMapping("/place")
     public ResponseEntity<?> placeOrder(@RequestBody OrderRequest orderRequest) {
-        //System.out.println(orderRequest);
         try {
             orderService.placeOrder(orderRequest);
             return ResponseEntity.ok("Order placed successfully");
-        }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }

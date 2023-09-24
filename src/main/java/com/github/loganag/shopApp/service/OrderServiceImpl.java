@@ -5,11 +5,11 @@ import com.github.loganag.shopApp.exceptions.InsufficientQuantityException;
 import com.github.loganag.shopApp.model.*;
 import com.github.loganag.shopApp.repos.OrderGoodRepo;
 import com.github.loganag.shopApp.repos.OrderRepo;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +20,6 @@ public class OrderServiceImpl implements OrderService {
     private final GoodServiceImpl goodService;
     private final OrderGoodRepo orderGoodRepo;
     private final OrderRepo orderRepo;
-
 
 
     @Transactional
@@ -88,15 +87,15 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Scheduled(fixedRate = 60000)   //Runs every minute
-    public void deleteUnpaidOrders(){
+    public void deleteUnpaidOrders() {
         LocalDateTime tenMinutesAgo = LocalDateTime.now().minusMinutes(10);
 
         List<Order> unpaidOrders = orderRepo.findByOrderTimeBeforeAndStatus(tenMinutesAgo, Status.PENDING);
 
-        for(Order order : unpaidOrders){
+        for (Order order : unpaidOrders) {
             List<OrderGood> unpaidOrderGoods = orderGoodRepo.findByOrder(order);
 
-            for (OrderGood orderGood: unpaidOrderGoods) {
+            for (OrderGood orderGood : unpaidOrderGoods) {
                 orderGoodRepo.delete(orderGood);
             }
 

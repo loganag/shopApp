@@ -1,6 +1,8 @@
 package com.github.loganag.shopApp.model;
 
-import jakarta.persistence.*;
+import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,5 +28,6 @@ public class Good {
     @Column(name = "price", nullable = false)
     private double price;
     @OneToMany(mappedBy = "good")
+    @JsonIgnore
     private Set<OrderGood> orderGoods;
 }
