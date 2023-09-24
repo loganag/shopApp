@@ -16,39 +16,44 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig {
 
-    @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+  @Bean
+  SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-        http
-                .csrf().disable()
-                .authorizeHttpRequests()
-                .antMatchers("/order/place").hasRole("USER")
-                .antMatchers("/order/all").hasAnyRole("USER", "MANAGER")
-                .antMatchers("/order/**").hasRole("MANAGER")
-                .antMatchers("/").permitAll()
-                .and().httpBasic();
-        return http.build();
-    }
+    http.csrf()
+        .disable()
+        .authorizeHttpRequests()
+        .antMatchers("/order/place")
+        .hasRole("USER")
+        .antMatchers("/order/all")
+        .hasAnyRole("USER", "MANAGER")
+        .antMatchers("/order/**")
+        .hasRole("MANAGER")
+        .antMatchers("/")
+        .permitAll()
+        .and()
+        .httpBasic();
+    return http.build();
+  }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user =
-                User.withDefaultPasswordEncoder()
-                        .username("user")
-                        .password("password")
-                        .roles("USER")
-                        .build();
+  @Bean
+  public UserDetailsService userDetailsService() {
+    UserDetails user =
+        User.withDefaultPasswordEncoder()
+            .username("user")
+            .password("password")
+            .roles("USER")
+            .build();
 
-        UserDetails manager =
-                User.withDefaultPasswordEncoder()
-                        .username("manager")
-                        .password("password")
-                        .roles("MANAGER")
-                        .build();
-        InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
-        inMemoryUserDetailsManager.createUser(user);
-        inMemoryUserDetailsManager.createUser(manager);
+    UserDetails manager =
+        User.withDefaultPasswordEncoder()
+            .username("manager")
+            .password("password")
+            .roles("MANAGER")
+            .build();
+    InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
+    inMemoryUserDetailsManager.createUser(user);
+    inMemoryUserDetailsManager.createUser(manager);
 
-        return inMemoryUserDetailsManager;
-    }
+    return inMemoryUserDetailsManager;
+  }
 }

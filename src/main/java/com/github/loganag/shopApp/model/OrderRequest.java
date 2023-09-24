@@ -1,14 +1,13 @@
 package com.github.loganag.shopApp.model;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderRequest {
-        private List<OrderGood> orderGoods;
+  private List<OrderGood> orderGoods;
 }
