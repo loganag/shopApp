@@ -56,7 +56,6 @@ public class OrderServiceImpl implements OrderService {
             newOrderGood.setQuantity(quantityOrdered);
             //Save the orderGood item to the database
             orderGoodRepo.save(newOrderGood);
-
         }
     }
 
