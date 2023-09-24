@@ -25,12 +25,11 @@ public class Order {
     @Column(name = "total_price", nullable = false)
     double totalPrice;
 
-    @ElementCollection(targetClass = Status.class, fetch = FetchType.EAGER)
-    @CollectionTable(name = "status", joinColumns = @JoinColumn(name = "order_id"))
     @Enumerated(EnumType.STRING)
-    private Set<Status> status;
+    @Column(name = "status")
+    private Status status;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private Set<OrderGood> orderGoods;
 
     @Override

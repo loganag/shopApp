@@ -2,17 +2,17 @@ package com.github.loganag.shopApp.service;
 
 import com.github.loganag.shopApp.exceptions.GoodNotFoundException;
 import com.github.loganag.shopApp.exceptions.InsufficientQuantityException;
-import com.github.loganag.shopApp.model.Good;
-import com.github.loganag.shopApp.model.Order;
-import com.github.loganag.shopApp.model.OrderGood;
-import com.github.loganag.shopApp.model.OrderRequest;
+import com.github.loganag.shopApp.model.*;
 import com.github.loganag.shopApp.repos.OrderGoodRepo;
 import com.github.loganag.shopApp.repos.OrderRepo;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -21,6 +21,8 @@ public class OrderServiceImpl implements OrderService {
     private final OrderGoodRepo orderGoodRepo;
     private final OrderRepo orderRepo;
 
+
+
     @Transactional
     public void placeOrder(OrderRequest orderRequest) {
         double totalPrice = calculateTotalPrice(orderRequest);
@@ -28,6 +30,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = new Order();
         order.setTotalPrice(totalPrice);
         order.setOrderTime(LocalDateTime.now());
+        order.setStatus(Status.PENDING);
         orderRepo.save(order);
 
         for (OrderGood orderGood : orderRequest.getOrderGoods()) {
@@ -58,6 +61,16 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    @Override
+    public Optional<Order> findById(Long id) {
+        return orderRepo.findById(id);
+    }
+
+    @Override
+    public Order save(Order order) {
+        return orderRepo.save(order);
+    }
+
     public double calculateTotalPrice(OrderRequest orderRequest) {
         double totalPrice = 0.0;
         for (OrderGood orderGood : orderRequest.getOrderGoods()) {
@@ -72,5 +85,22 @@ public class OrderServiceImpl implements OrderService {
             totalPrice += goodSubtotal;
         }
         return totalPrice;
+    }
+
+    @Scheduled(fixedRate = 60000)   //Runs every minute
+    public void deleteUnpaidOrders(){
+        LocalDateTime tenMinutesAgo = LocalDateTime.now().minusMinutes(10);
+
+        List<Order> unpaidOrders = orderRepo.findByOrderTimeBeforeAndStatus(tenMinutesAgo, Status.PENDING);
+
+        for(Order order : unpaidOrders){
+            List<OrderGood> unpaidOrderGoods = orderGoodRepo.findByOrder(order);
+
+            for (OrderGood orderGood: unpaidOrderGoods) {
+                orderGoodRepo.delete(orderGood);
+            }
+
+            orderRepo.delete(order);
+        }
     }
 }
